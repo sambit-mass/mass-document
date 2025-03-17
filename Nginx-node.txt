@@ -1,0 +1,132 @@
+// Install nginx 
+sudo api install nginx 
+
+//install NVM (https://github.com/nvm-sh/nvm )
+
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash 
+
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+
+
+//Install Node specific version 
+
+#nvm i 22.0.1
+nvm install --lts
+
+
+node -v
+npm -v
+
+// create folder under /var/www/project folder name
+
+cd /var/www/
+chown ubuntu:www-data -R www/
+chmod 775  -R www/
+mkdir project_folder_name(app_api) 
+Cd ..
+ ----step for git-----
+git clone url(index.js)
+mv git folder to app_api folder
+ ----create .env file for index.js----
+---nano  .env file add---
+PORT=3000
+APP_NAME=MyNodeServer
+ENVIRONMENT=production
+ --npm install express dotenv---(install express and .env)
+
+//setup proxy server - create service.conf in nginx and change folder name, port and domain name
+
+server {
+	listen 80;
+	listen [::]:80;
+	server_name app-api-v3.test.ie;
+	root /var/www/app_api;
+	index index.html;
+	location / {
+	#proxy_set_header X-Forwarded-Proto https;
+	proxy_pass http://localhost:3000;
+	proxy_http_version 1.1;
+	proxy_set_header Upgrade $http_upgrade;
+	proxy_set_header Connection 'upgrade';
+	proxy_set_header Host $host;
+	proxy_cache_bypass $http_upgrade;
+	#try_files $uri $uri/ =404;
+	client_max_body_size 200m;
+	}
+}
+
+
+sudo ln -s /etc/nginx/sites-available/service.cong /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl restart nginx
+
+cd /var/www/app_api
+npm install -g pm2
+pm2 start index.js
+pm2 save
+pm2 startup
+
+if modify index.js file use
+pm2 status--check which index number (id-0 or 1)
+then (pm2 restart 0 or 1 or 2)
+ 
+-------index.js file----(.env)
+require('dotenv').config(); // Load environment variables from .env
+
+const express = require('express');
+const app = express();
+
+const PORT = process.env.PORT || 3000;
+const APP_NAME = process.env.APP_NAME || "Node Server";
+const ENVIRONMENT = process.env.ENVIRONMENT || "development";
+
+// Home Route
+app.get('/', (req, res) => {
+    res.send(`
+        <h1>🚀 Welcome to ${APP_NAME} on AWS EC2!</h1>
+        <p>This server is running in <strong>${ENVIRONMENT}</strong> mode.</p>
+        <p>💡 Try accessing <a href="/api/info">/api/info</a> for a JSON response.</p>
+        <hr>
+        <p>✅ Server Time: ${new Date().toLocaleString()}</p>
+        <p>🌍 Your IP Address: ${req.ip}</p>
+    `);
+});
+
+// Info Route
+app.get('/api/info', (req, res) => {
+    res.json({
+        message: "Welcome to the API",
+        server_time: new Date().toISOString(),
+        status: "Running smoothly 🚀",
+        environment: ENVIRONMENT
+    });
+});
+
+// Start Server
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`✅ ${APP_NAME} is running on http://your-ec2-public-ip:${PORT}`);
+});
+
+npm install express dotenv
+ 
+----one more index.js script---
+PORT=3000(.env file)
+--------
+require('dotenv').config(); // Load environment variables from .env
+
+const express = require('express');
+const app = express();
+
+const PORT = process.env.PORT || 3000; // Use PORT from .env or default to 3000
+
+// Home Route
+app.get('/', (req, res) => {
+    res.send(`<h1>🚀 Welcome to My Simple Node.js Server!</h1>`);
+});
+
+// Start Server
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`✅ Server is running on http://your-ec2-public-ip:${PORT}`);
+});
+

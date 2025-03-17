@@ -1,0 +1,9 @@
+create vpc
+create subnet (1. public and 2. private)
+create IGW and attach vpc
+----create NAT-GW step---
+        name - subnet (chosse public subnet) - connectivity (public)
+        and elastic ip allocation - create NAT gw.
+        
+create route-table-public and attach public subnet and attach IGW click Route
+create route-table-private and attach private subnet and attach NAT-GW click Route
