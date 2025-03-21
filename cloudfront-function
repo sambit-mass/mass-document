@@ -1,0 +1,29 @@
+function handler(event) {
+    var request = event.request;
+    var uri = request.uri;
+
+    // Redirect "/static" and "/static/" to "/index.html"
+    if (uri === "/static" || uri === "/static/") {
+        return {
+            statusCode: 302,
+            statusDescription: "Found",
+            headers: { 
+                "location": { "value": "/index.html" } 
+            }
+        };
+    }
+
+    // Redirect "/", "/web", and "/web/" to "/web/index.html"
+    if (uri === "/web" || uri === "/web/") {
+        return {
+            statusCode: 302,
+            statusDescription: "Found",
+            headers: { 
+                "location": { "value": "/web/index.html" } 
+            }
+        };
+    }
+
+    // Allow all other requests to proceed as normal
+    return request;
+}

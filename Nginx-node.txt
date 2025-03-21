@@ -35,6 +35,8 @@ APP_NAME=MyNodeServer
 ENVIRONMENT=production
  --npm install express dotenv---(install express and .env)
 
+sudo nano /etc/nginx/sites-available/service.conf
+
 //setup proxy server - create service.conf in nginx and change folder name, port and domain name
 
 server {

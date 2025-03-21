@@ -1,0 +1,57 @@
+=================== for root cloufront url only ======================
+function handler(event) {
+    var request = event.request;
+    var uri = request.uri;
+
+    // Redirect only if the request is exactly "/"
+    if (uri === "/") {
+        return {
+            statusCode: 302,
+            statusDescription: "Found",
+            headers: { 
+                "location": { "value": "/prod/index.html" }  // Ensure absolute path
+            }
+        };
+    }
+
+    // Allow all other requests to proceed as normal
+    return request;
+}
+======================= for different bucket =============================
+function handler(event) {
+    var request = event.request;
+    var uri = request.uri;
+
+    // Redirect only if the request is exactly "/prod"
+    if (uri === "/prod") {
+        return {
+            statusCode: 302,
+            statusDescription: "Found",
+            headers: { 
+                "location": { "value": "/prod/index.html" } 
+            }
+        };
+    }
+
+    // Allow all other requests to proceed as normal
+    return request;
+}
+=================== for 2nd bucket function =======================
+function handler(event) {
+    var request = event.request;
+    var uri = request.uri;
+
+    // Redirect only if the request is exactly "/user"
+    if (uri === "/user") {
+        return {
+            statusCode: 302,
+            statusDescription: "Found",
+            headers: { 
+                "location": { "value": "/user/index.html" } 
+            }
+        };
+    }
+
+    // Allow all other requests to proceed as normal
+    return request;
+}
